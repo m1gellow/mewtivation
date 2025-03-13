@@ -1,0 +1,19 @@
+@import '../../styles/vars';
+
+
+.layout{
+    background-color: $bgLayoutColor;
+    height: 100%;
+    width: 100%;
+    padding: 15px 25px 15px;
+    
+    .content{
+    background-color: $bgContentColor;
+    border: 2px solid;
+    border-color: $borderColor;
+    border-radius: 15px;
+    height: 100%;
+    width: 100%;
+}
+}
+

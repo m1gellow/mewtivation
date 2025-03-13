@@ -1,0 +1,17 @@
+@import '../../styles/vars';
+@import '../../styles/mixins';
+
+
+.progressbar{
+    width: 315px;
+    height: 13px;
+    border: 2px solid black;
+    border-radius: 11px;
+    
+    .progressLine{
+       @include progressLine($color:black );
+        
+    }
+ 
+
+}
