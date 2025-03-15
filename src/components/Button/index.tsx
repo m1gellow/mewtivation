@@ -15,3 +15,10 @@ export const ResetButton = ({onClick}: {onClick: () => void}) => {
         </button>
     )
 }
+export const MainButton = ({onClick, type}: {onClick?: () => void, type: any}) => {
+    return (
+        <button onClick={onClick} type={type} className={css.mainButton}>
+           add
+        </button>
+    )
+}

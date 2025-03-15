@@ -1,0 +1,10 @@
+@import '../../styles/vars';
+@import '../../styles/mixins';
+
+
+.touchLine{
+    background-color: gray;
+    width: 300px;
+    height: 9px;
+    border-radius:  15px;
+}

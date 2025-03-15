@@ -2,6 +2,6 @@
 @mixin progressLine($color: black, $width: "0px"){
     width: $width;
         background-color: $color;
-        height: 11px;
+        height: 10px;
 
 }

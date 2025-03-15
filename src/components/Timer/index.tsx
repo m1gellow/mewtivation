@@ -46,10 +46,13 @@ export const Timer = () => {
   }, [totalTime, time])
 
   const handleStart = () => {
-    const totalSeconds = TimeToSeconds(time)
-    setTotalTime(totalSeconds)
-    setIsActive(true)
-    setIsActive(!isActive)
+    if (!isActive && totalTime !== 0) {
+      const totalSeconds = TimeToSeconds(time);
+      setTotalTime(totalSeconds);
+      setIsActive(true);
+    }else{
+      setIsActive(false)
+    }
   }
 
   const formatTime = (time: number) => {
@@ -59,6 +62,12 @@ export const Timer = () => {
     setTime({hours: 0, minutes: 0, seconds: 0})
     setTotalTime(0)
   }
+
+ const setTimer = ({hours, minutes, seconds}: TTime) => {
+  const newTime = { hours, minutes, seconds };
+  setTime(newTime);
+  setTotalTime(TimeToSeconds(newTime));
+ }
 
 
   return (
@@ -76,11 +85,11 @@ export const Timer = () => {
         <ResetButton onClick={resetTime}  />
       </div>
       <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
-        <button onClick={() => {setTime({hours: 0, minutes: 15, seconds: 0}), setTotalTime(TimeToSeconds(time))}}>15min</button>
-        <button onClick={() => {setTime({hours: 0, minutes: 30, seconds: 0}), setTotalTime(TimeToSeconds(time))}}>30min</button>
-        <button onClick={() => {setTime({hours: 1, minutes: 0, seconds: 0}), setTotalTime(TimeToSeconds(time))}}>1hr</button>
-        <button onClick={() => {setTime({hours: 1, minutes: 30, seconds: 0}), setTotalTime(TimeToSeconds(time))}}>1hr 30min</button>
-        <button onClick={() => {setTime({hours: 2, minutes: 0, seconds: 0}), setTotalTime(TimeToSeconds(time))}}>2hr</button>
+        <button onClick={() => setTimer({hours: 0, minutes: 15, seconds: 0})}>15min</button>
+        <button onClick={() => setTimer({hours: 0, minutes: 30, seconds: 0})}>30min</button>
+        <button onClick={() => setTimer({hours: 1, minutes: 0, seconds: 0})}>1hr</button>
+        <button onClick={() => setTimer({hours: 1, minutes: 30, seconds: 0})}>1hr 30min</button>
+        <button onClick={() => setTimer({hours: 2, minutes: 0, seconds: 0})}>2hr</button>
       </div>
     </div>
   )
