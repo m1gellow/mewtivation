@@ -15,10 +15,10 @@ export const ResetButton = ({onClick}: {onClick: () => void}) => {
         </button>
     )
 }
-export const MainButton = ({onClick, type}: {onClick?: () => void, type: any}) => {
+export const MainButton = ({onClick, type, children}: {onClick?: () => void, type: any, children: React.ReactNode}) => {
     return (
         <button onClick={onClick} type={type} className={css.mainButton}>
-           add
+           {children}
         </button>
     )
 }

@@ -3,6 +3,7 @@ import css from './index.module.scss'
 import { Progressbar } from '../Progressbar'
 import { PauseButton, ResetButton } from '../Button'
 import { TimeToSeconds } from '../../lib/timeToSeconds'
+import { useTimeTracker } from '../../lib/store'
 
 export type TTime = {
   hours: number
@@ -11,15 +12,26 @@ export type TTime = {
 }
 
 export const Timer = () => {
+  const trackerTime = useTimeTracker((state) => state.data.time)
   const [time, setTime] = useState<TTime>({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
+    hours: trackerTime.hours,
+    minutes: trackerTime.minutes,
+    seconds: trackerTime.seconds,
   })
   const [isActive, setIsActive] = useState(false)
-  const [totalTime, setTotalTime] = useState(0)
+  const [totalTime, setTotalTime] = useState(TimeToSeconds(trackerTime))
   const [progress, setProgress] = useState(0)
 
+
+
+  useEffect(() => {
+    // Update totalTime whenever trackerTime changes
+    setTotalTime(TimeToSeconds(trackerTime));
+    setTime(trackerTime); // Update local time state as well
+  }, [trackerTime]);
+
+
+  //for timer
   useEffect(() => {
     let interval: number | undefined
 
@@ -35,6 +47,8 @@ export const Timer = () => {
     return () => clearInterval(interval)
   }, [isActive, totalTime])
 
+
+  //For progress bar
   useEffect(() => {
     if (totalTime > 0) {
       const totalSeconds = TimeToSeconds(time)
@@ -45,29 +59,33 @@ export const Timer = () => {
     }
   }, [totalTime, time])
 
+
+  //for start button
   const handleStart = () => {
     if (!isActive && totalTime !== 0) {
-      const totalSeconds = TimeToSeconds(time);
-      setTotalTime(totalSeconds);
       setIsActive(true);
     }else{
       setIsActive(false)
     }
   }
 
+  //to make format time
   const formatTime = (time: number) => {
     return String(time).padStart(2, '0')
   }
+
+  // to reset time to 00:00:00
   const resetTime = () => {
     setTime({hours: 0, minutes: 0, seconds: 0})
     setTotalTime(0)
   }
 
- const setTimer = ({hours, minutes, seconds}: TTime) => {
-  const newTime = { hours, minutes, seconds };
-  setTime(newTime);
-  setTotalTime(TimeToSeconds(newTime));
- }
+  
+//  const setTimer = ({hours, minutes, seconds}: TTime) => {
+//   const newTime = { hours, minutes, seconds };
+//   setTime(newTime);
+//   setTotalTime(TimeToSeconds(newTime));
+//  }
 
 
   return (
@@ -83,13 +101,6 @@ export const Timer = () => {
       <div style={{ margin: '20px', display: "flex", gap: '20px' }}>
         <PauseButton onClick={handleStart} isActive={isActive}  />
         <ResetButton onClick={resetTime}  />
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
-        <button onClick={() => setTimer({hours: 0, minutes: 15, seconds: 0})}>15min</button>
-        <button onClick={() => setTimer({hours: 0, minutes: 30, seconds: 0})}>30min</button>
-        <button onClick={() => setTimer({hours: 1, minutes: 0, seconds: 0})}>1hr</button>
-        <button onClick={() => setTimer({hours: 1, minutes: 30, seconds: 0})}>1hr 30min</button>
-        <button onClick={() => setTimer({hours: 2, minutes: 0, seconds: 0})}>2hr</button>
       </div>
     </div>
   )

@@ -1,7 +1,7 @@
 import { Timer } from '../../components/Timer'
 import css from './index.module.scss'
 import Cat from '../../../public/Cat.png'
-// import { TaskMenu } from '../../components/TaskMenu'
+import { TaskMenu } from '../../components/TaskMenu'
 
 export const HomePage = () => {
   return (
@@ -10,9 +10,9 @@ export const HomePage = () => {
       <h1>
         <Timer />
       </h1>
-      {/* <div className={css.taskMenuWrapper}>
+      <div className={css.taskMenuWrapper}>
         <TaskMenu/>
-      </div> */}
+      </div>
     </div>
   )
 }
