@@ -9,7 +9,9 @@
     border-radius: 11px;
     
     .progressLine{
-       @include progressLine($color:black );
+       @include progressLine($color: #7D9EF2 );
+       border-radius: 15px;
+       height: 9px;
         
     }
  
