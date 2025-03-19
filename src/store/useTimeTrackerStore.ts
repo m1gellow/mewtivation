@@ -1,9 +1,17 @@
 import { create } from "zustand"
-import { ITrackerData } from "./../lib/types"
 import { TTime } from "../components/Timer"
 
 type TimeTracker = {
-  data: ITrackerData
+  data: {
+    id: string,
+    name: string,
+    time: {
+      seconds: number | undefined,
+      hours: number | undefined,
+      minutes: number | undefined,
+    },
+    isActive: boolean
+  }
   setTaskName: (name: string) => void
   setTaskTime: (time: TTime) => void
 }

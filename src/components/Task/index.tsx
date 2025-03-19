@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+
 import { ITrackerData } from '../../lib/types'
 import { useSetTaskToActive } from '../../store/useTasksStore'
 import css from './index.module.scss'
