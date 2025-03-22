@@ -11,7 +11,8 @@
     "types": "tsc --noEmit --project ./tsconfig.app.json && tsc --noEmit --project ./tsconfig.node.json",
     "prettify": "prettier --log-level warn --cache --write \"{src/**/*,*}.{ts,tsx,js,json,yml,scss}\"",
     "stylelint": "stylelint --cache --cache-location ./node_modules/.cache/.stylelintcache 'src/**/*.scss' ",
-    "stylecheck": "sass --update -q ./src:./node_modules/.cache/.stylecheckcache"
+    "stylecheck": "sass --update -q ./src:./node_modules/.cache/.stylecheckcache",
+    "prepare": "husky install"
   },
   "dependencies": {
     "classnames": "^2.5.1",
@@ -32,6 +33,8 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
     "prettier": "^3.5.3",
     "stylelint": "^16.15.0",
     "stylelint-config-prettier-scss": "^1.0.0",

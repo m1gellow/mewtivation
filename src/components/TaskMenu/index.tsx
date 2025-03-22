@@ -1,17 +1,21 @@
-import { FormEvent, useEffect, useState } from 'react'
-import { TouchLine } from '../TouchLine'
+import { FormEvent, useState } from 'react'
 import css from './index.module.scss'
 import { MainButton } from '../Button'
-import { useSetTaskName, useSetTaskTime } from '../../store/useTimeTrackerStore'
+import { useSetTaskTime } from '../../store/useTimeTrackerStore'
 import { TaskCard } from '../Task'
 import { useSetTasks, useTask } from '../../store/useTasksStore'
 import { ITrackerData } from '../../lib/types'
-import {v4 as uuidv4} from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
-
-
-export const SetTaskMenu = () => {
-  const [isActive, setIsActive] = useState(true)
+export const Menu = ({
+  showSetTaskMenu,
+  showTaskMenu,
+  setShowSetTaskMenu,
+}: {
+  showSetTaskMenu: boolean
+  showTaskMenu: boolean
+  setShowSetTaskMenu: (arg1: boolean) => void
+}) => {
   const [value, setValue] = useState<ITrackerData>({
     id: '',
     name: '',
@@ -20,43 +24,43 @@ export const SetTaskMenu = () => {
       hours: 0,
       minutes: 0,
     },
-    isActive: false
+    isActive: false,
+    isDone: false
   })
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.altKey) {
-        setIsActive((prevValue) => !prevValue)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [])
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
 
-    useSetTasks(value)
-    useSetTaskName(value.name)
-    useSetTaskTime(value.time)
-    setValue({
-      id: uuidv4(),
-      name: '',
-      time: {
-        seconds: 0,
-        hours: 0,
-        minutes: 0,
-      },
-      isActive: true
-    })
-    setIsActive(false)
+    if (value.name !== '') {
+      setShowSetTaskMenu(false)
+      useSetTasks({
+        id: uuidv4(),
+        name: value.name,
+        time: {
+          seconds: value.time.seconds,
+          minutes: value.time.minutes,
+          hours: value.time.hours,
+        },
+        isActive: false,
+        isDone: false
+      })
+      // useSetTaskName(value.name)
+      useSetTaskTime(value.time)
+      setValue({
+        id: '',
+        name: '',
+        time: {
+          seconds: 0,
+          hours: 0,
+          minutes: 0,
+        },
+        isActive: true,
+        isDone: false
+      })
+    }
   }
 
-  if (isActive) {
+  if (showSetTaskMenu === true) {
     return (
       <div className={css.taskMenu}>
         <form onSubmit={handleSubmit} className={css.form}>
@@ -99,57 +103,23 @@ export const SetTaskMenu = () => {
           </div>
           <MainButton type={'submit'}>Add</MainButton>
         </form>
-
-        <div>
-          <TouchLine setOpen={setIsActive} isOpen={isActive} />
-        </div>
       </div>
     )
-  } else {
-    return (
-      <div className={css.touchLine}>
-        <TouchLine setOpen={setIsActive} isOpen={isActive} />
-      </div>
-    )
+  } else if (showTaskMenu) {
+    return <MainMenu />
   }
 }
 
 export const MainMenu = () => {
   const tasks = useTask((state) => state.tasks)
-  const [isActive, setIsActive] = useState(true)
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.altKey) {
-        setIsActive((prevValue) => !prevValue)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [])
-
-  if (isActive) {
-    return (
-      <div className={css.MainTaskMenu}>
-        {tasks.map((task) => (
-          <div key={task.name}>
-            <TaskCard task={task} />
-          </div>
-        ))}
-        <div>
-          <TouchLine setOpen={setIsActive} isOpen={isActive} />
-        </div>
-      </div>
-    )
-  } else {
-    return (
-      <div className={css.touchLine}>
-        <TouchLine setOpen={setIsActive} isOpen={isActive} />
-      </div>
-    )
-  }
+  const elementsAfterFirst = tasks.slice(1)
+  return (
+    <div className={css.MainTaskMenu}>
+      {elementsAfterFirst.length > 0 ? (
+        elementsAfterFirst.map((task) => <TaskCard key={task.id} task={task} />)
+      ) : (
+        <div>Dont have an y tasks yet</div>
+      )}
+    </div>
+  )
 }

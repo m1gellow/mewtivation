@@ -7,4 +7,5 @@ export interface ITrackerData {
       minutes: number
     },
     isActive: boolean
+    isDone: boolean
   }
