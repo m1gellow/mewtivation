@@ -1,5 +1,6 @@
 @import '../../styles/vars';
 @import '../../styles/mixins';
+@import "include-media";
 
 
 .taskMenu{
@@ -13,6 +14,9 @@
     gap: 40px;
     align-items: center;
     justify-content: center;
+    @include media($breakpoint){
+        width: 400px;
+    }
 
 
     .form{
@@ -61,5 +65,8 @@
     gap: 40px;
     align-items: center;
     justify-content: center;
+    @include media($breakpoint){
+        width: 400px;
+    }
 
 }

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import css from './index.module.scss'
 import { MainButton } from '../Button'
 import { useSetTaskTime } from '../../store/useTimeTrackerStore'
@@ -7,15 +7,31 @@ import { useSetTasks, useTask } from '../../store/useTasksStore'
 import { ITrackerData } from '../../lib/types'
 import { v4 as uuidv4 } from 'uuid'
 
-export const Menu = ({
-  showSetTaskMenu,
-  showTaskMenu,
-  setShowSetTaskMenu,
-}: {
-  showSetTaskMenu: boolean
-  showTaskMenu: boolean
-  setShowSetTaskMenu: (arg1: boolean) => void
-}) => {
+export const Menu = ({}) => {
+  const [showSetTaskMenu, setShowSetTaskMenu] = useState(false)
+  const [showTaskMenu, setShowTaskMenu] = useState(false)
+
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.altKey) {
+        setShowSetTaskMenu((prev) => !prev)
+      }
+      if ((e.ctrlKey && e.key === 'x') || e.key === 'ч' || e.key === 'X' || e.key === 'Ч') {
+        setShowTaskMenu((prev) => !prev)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+
+
+
   const [value, setValue] = useState<ITrackerData>({
     id: '',
     name: '',
@@ -44,7 +60,6 @@ export const Menu = ({
         isActive: false,
         isDone: false
       })
-      // useSetTaskName(value.name)
       useSetTaskTime(value.time)
       setValue({
         id: '',
@@ -54,20 +69,22 @@ export const Menu = ({
           hours: 0,
           minutes: 0,
         },
-        isActive: true,
+        isActive: false,
         isDone: false
       })
     }
   }
+  
 
   if (showSetTaskMenu === true) {
     return (
-      <div className={css.taskMenu}>
+      <div className={css.taskMenu} >
         <form onSubmit={handleSubmit} className={css.form}>
           <input
             type="text"
             name="name"
             placeholder="task name"
+            autoFocus
             onChange={(e) => setValue({ ...value, name: e.target.value })}
             value={value.name}
             className={css.input}
@@ -107,7 +124,9 @@ export const Menu = ({
     )
   } else if (showTaskMenu) {
     return <MainMenu />
-  }
+  }else   return <MainButton  type={'button'} onClick={() => setShowSetTaskMenu(true)}>
+  Create
+</MainButton>
 }
 
 export const MainMenu = () => {
@@ -118,7 +137,7 @@ export const MainMenu = () => {
       {elementsAfterFirst.length > 0 ? (
         elementsAfterFirst.map((task) => <TaskCard key={task.id} task={task} />)
       ) : (
-        <div>Dont have an y tasks yet</div>
+        <div>Dont have any tasks yet</div>
       )}
     </div>
   )

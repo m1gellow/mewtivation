@@ -1,4 +1,6 @@
 @import '../../styles/vars';
+@import "include-media";
+
 
 
 .timerWrapper{
@@ -13,6 +15,9 @@
         font-size:  150px;
         font-weight: 600;
         user-select: none;
+        @include media($breakpoint){
+            font-size: 100px;
+        }
     }
 }
 

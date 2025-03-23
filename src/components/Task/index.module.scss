@@ -1,6 +1,6 @@
 @import '../../styles/mixins';
 @import '../../styles/vars';
-
+@import 'include-media';
 
 .task{
     background-color: $textColor;
@@ -11,6 +11,9 @@
     border-radius: 13px;
     width: 100%;
 width: 600px;
+@include media($breakpoint){
+    width: 350px;
+}
     .taskCardElements{
         display: flex;
         justify-content: space-between;
