@@ -5,12 +5,8 @@ import { PauseButton, ResetButton } from '../Button';
 import { TimeToSeconds } from '../../lib/timeToSeconds';
 import { useTimeTracker } from '../../store/useTimeTrackerStore';
 import { useTask } from '../../store/useTasksStore';
+import { TTime } from '../../lib/types';
 
-export type TTime = {
-  hours: number | undefined;
-  minutes: number | undefined;
-  seconds: number | undefined;
-};
 
 export const Timer = () => {
   const trackerTime = useTimeTracker((state) => state.data.time);
@@ -102,7 +98,7 @@ export const Timer = () => {
     }
   }, [totalTime, time]);
 
-  // Start timer
+
   const handleStart = () => {
     if (!isActive && totalTime !== 0) {
       setIsActive(true);
@@ -112,12 +108,10 @@ export const Timer = () => {
     }
   };
 
-  //to make format time
   const formatTime = (time: number) => {
     return String(time).padStart(2, '0')
   }
 
-  // to reset time to 00:00:00
   const resetTime = () => {
     setTime({ hours: 0, minutes: 0, seconds: 0 })
     setTotalTime(0)

@@ -13,6 +13,7 @@ export const TaskCard = ({ task }: { task: ITrackerData }) => {
       const newTasks: ITrackerData | undefined = useTask.getState().tasks.find((task) => task.isActive === true)
       if (e.key === 'Backspace') {
         useSetDeleteTask(newTasks?.id)
+        localStorage.setItem("autoSavedData", JSON.stringify([... useTask.getState().tasks.filter((task) => task.id !== newTasks?.id)]))
       }
     }
 
@@ -22,13 +23,22 @@ export const TaskCard = ({ task }: { task: ITrackerData }) => {
   }, [])
 
   const setActive = () => {
-    if (!task.isDone) {
       useSetTaskToActive(task.id)
-    }
+      localStorage.setItem("autoSavedData", JSON.stringify([...useTask.getState().tasks]))
   }
 
   const handleDoneTask = () => {
     useSetTaskIsDone(task.id)
+    // more complex system to save data as done in storage
+    const savedData: ITrackerData[] = JSON.parse(localStorage.getItem("autoSavedData")!)
+    const newData = savedData.map((t) => {
+      if(t.id === task.id){
+        return {...t, isDone: t.isDone === false ? true : false}
+      }else{
+        return t
+      }
+    })
+    localStorage.setItem("autoSavedData", JSON.stringify([...newData]))
   }
 
   return (

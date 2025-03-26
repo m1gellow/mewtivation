@@ -7,10 +7,28 @@ import { useSetTasks, useTask } from '../../store/useTasksStore'
 import { ITrackerData } from '../../lib/types'
 import { v4 as uuidv4 } from 'uuid'
 
-export const Menu = ({}) => {
+export const Menu = () => {
   const [showSetTaskMenu, setShowSetTaskMenu] = useState(false)
   const [showTaskMenu, setShowTaskMenu] = useState(false)
+  const [value, setValue] = useState<ITrackerData>({
+    id: '',
+    name: '',
+    time: {
+      seconds: 0,
+      hours: 0,
+      minutes: 0,
+    },
+    isActive: false,
+    isDone: false,
+  })
 
+  useEffect(() => {
+    // here we get data
+    let autoSavedData: ITrackerData[] = JSON.parse(localStorage.getItem("autoSavedData")!)
+    if(autoSavedData){
+      autoSavedData.forEach((task) => useSetTasks(task))
+    }
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -29,27 +47,13 @@ export const Menu = ({}) => {
     }
   }, [])
 
-
-
-
-  const [value, setValue] = useState<ITrackerData>({
-    id: '',
-    name: '',
-    time: {
-      seconds: 0,
-      hours: 0,
-      minutes: 0,
-    },
-    isActive: false,
-    isDone: false
-  })
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
 
     if (value.name !== '') {
       setShowSetTaskMenu(false)
-      useSetTasks({
+
+      const newValues = {
         id: uuidv4(),
         name: value.name,
         time: {
@@ -58,8 +62,22 @@ export const Menu = ({}) => {
           hours: value.time.hours,
         },
         isActive: false,
-        isDone: false
-      })
+        isDone: false,
+      }
+      useSetTasks(newValues)
+
+      // here we get data
+      let autoSavedData:ITrackerData[] = JSON.parse(localStorage.getItem("autoSavedData")!)
+
+      if(autoSavedData){
+        //here we set data
+        localStorage.setItem("autoSavedData", JSON.stringify([...autoSavedData, newValues]))
+       
+        autoSavedData.forEach((task) => useSetTasks(task))
+      }else{
+        localStorage.setItem("autoSavedData", JSON.stringify([newValues]))
+      }
+
       useSetTaskTime(value.time)
       setValue({
         id: '',
@@ -70,15 +88,14 @@ export const Menu = ({}) => {
           minutes: 0,
         },
         isActive: false,
-        isDone: false
+        isDone: false,
       })
     }
   }
-  
 
   if (showSetTaskMenu === true) {
     return (
-      <div className={css.taskMenu} >
+      <div className={css.taskMenu}>
         <form onSubmit={handleSubmit} className={css.form}>
           <input
             type="text"
@@ -124,14 +141,18 @@ export const Menu = ({}) => {
     )
   } else if (showTaskMenu) {
     return <MainMenu />
-  }else   return <MainButton  type={'button'} onClick={() => setShowSetTaskMenu(true)}>
-  Create
-</MainButton>
+  } else
+    return (
+      <MainButton type={'button'} onClick={() => setShowSetTaskMenu(true)}>
+        Create
+      </MainButton>
+    )
 }
 
 export const MainMenu = () => {
   const tasks = useTask((state) => state.tasks)
-  const elementsAfterFirst = tasks.slice(1)
+  let elementsAfterFirst = tasks.slice(1)
+
   return (
     <div className={css.MainTaskMenu}>
       {elementsAfterFirst.length > 0 ? (

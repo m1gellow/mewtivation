@@ -1,4 +1,4 @@
-import { TTime } from "../components/Timer";
+import { TTime } from "./types";
 
 export const TimeToSeconds = (time: TTime | undefined) => {
     if (!time) {

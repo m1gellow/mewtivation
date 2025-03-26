@@ -25,9 +25,15 @@ export const useTask = create<TTasks>((set) => ({
   ],
 
   setTasks: (task: ITrackerData) => {
-    set((state) => ({
-      tasks: [...state.tasks, task],
-    }))
+    set((state) => {
+      const exists = state.tasks.some((existingTask) => existingTask.id === task.id)
+      if (!exists) {
+        return {
+          tasks: [...state.tasks, task],
+        }
+      }
+      return state
+    })
   },
   setTaskActiveState: (id: string | undefined) => {
     set((state) => ({

@@ -9,3 +9,9 @@ export interface ITrackerData {
     isActive: boolean
     isDone: boolean
   }
+
+  export type TTime = {
+    hours: number | undefined;
+    minutes: number | undefined;
+    seconds: number | undefined;
+  };
